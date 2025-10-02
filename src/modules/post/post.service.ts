@@ -32,7 +32,7 @@ const getAllPosts = async ({
   tags?: string[];
 }) => {
   const skip = (page - 1) * limit;
-  console.log({ tags });
+  // console.log({ tags });
 
   const where: any = {
     AND: [
@@ -52,7 +52,18 @@ const getAllPosts = async ({
     take: limit,
     where,
   });
-  return result;
+
+  const total = await prisma.post.count({ where });
+
+  return {
+    data: result,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 const getPostById = async (id: number) => {
